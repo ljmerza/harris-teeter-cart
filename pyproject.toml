@@ -1,0 +1,22 @@
+[project]
+name = "harris-teeter-cart"
+version = "1.0.0"
+description = "Harris Teeter cart sorted by aisle"
+readme = "README.md"
+requires-python = ">=3.13"
+# The browser stack (camoufox, playwright and the Camoufox browser build) is
+# pinned in the Dockerfile, which is the only place the app runs. The parser
+# and web UI are stdlib only, so the tests need nothing else.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -2,7 +2,10 @@
 
 Signs in to harristeeter.com with a headful Camoufox browser, reads the cart, and shows the items
 on a simple page grouped and sorted by aisle (the site and app sort the cart by when items were added).
-Public repo: `github.com/ljmerza/harris-teeter-cart`.
+Public repo: `github.com/ljmerza/harris-teeter-cart`. CI uses `ljmerza/misc-actions@v2` (`ci.yml` on PRs,
+`build-and-push.yml` on main and releases) and publishes `ghcr.io/ljmerza/harris-teeter-cart`. Release by
+bumping `version` in `pyproject.toml` and publishing a `vX.Y.Z` GitHub release. The home lab still builds
+locally through dca rather than pulling that image.
 
 - **Run:** service `harris-teeter-cart` in `../../docker-compose.local.yml` (dcwrap). Credentials:
   `../../env/harris_teeter.env` (`HT_EMAIL`/`HT_PASSWORD`, template in `.env.example`). After code
@@ -19,8 +22,8 @@ Public repo: `github.com/ljmerza/harris-teeter-cart`.
   needed, captures every JSON response the cart page loads, and closes the browser.
 - **Layout:** `ht_cart/browser.py` (Camoufox launch with a persistent profile and saved fingerprint,
   adapted from `../lowedepot/retailers/browser.py`), `scrape.py` (sign-in + capture), `parse.py`
-  (stdlib-only extraction + aisle sort), `web.py` (stdlib HTTP UI). Tests: `python3 -m unittest
-  discover -s tests -t .` (no deps needed).
+  (stdlib-only extraction + aisle sort), `web.py` (stdlib HTTP UI). Tests: `uv run pytest` (what CI runs)
+  or `python3 -m unittest discover -s tests -t .` (no deps needed).
 - **State** lives in `../../volumes/harris_teeter_cart/` (bind-mounted at `/data`, root-owned): `profile/` + `profile.identity.json` (the
   persistent browser identity; delete both to start over as a new device), `cart.json` (last
   result), and `captures/<ts>/` (raw JSON, `cart.png`, `cart.html`; the last 5 runs are kept).

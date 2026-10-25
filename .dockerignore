@@ -5,3 +5,9 @@ data/
 *.apks
 .claude/
 tests/
+.venv/
+.pytest_cache/
+.coverage
+coverage.xml
+.github/
+docs/

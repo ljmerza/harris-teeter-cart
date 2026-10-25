@@ -4,3 +4,7 @@ __pycache__/
 data/
 *.apks
 .claude/
+.venv/
+.pytest_cache/
+.coverage
+coverage.xml

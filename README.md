@@ -6,6 +6,8 @@ your cart and shows it on a simple page grouped by aisle, with the same names, s
 sale prices the app shows. Inside an aisle items are sorted by bay so the list follows you down the
 aisle. You can cross things off as you shop.
 
+<img src="docs/screenshot.png" alt="Cart grouped by aisle" width="420">
+
 ## How it works
 
 Harris Teeter runs on Kroger's platform and their site sits behind Akamai bot protection, so plain
@@ -34,16 +36,17 @@ The site is only contacted when you press Refresh. Loading the page just shows t
 
 ## Setup
 
-You need Docker. Build the image, then run it with your harristeeter.com sign-in.
+You need Docker. Put your harristeeter.com sign-in in an env file, then run the prebuilt image.
 
 ```bash
-docker build -t harris-teeter-cart .
 cp .env.example harris_teeter.env   # fill in HT_EMAIL and HT_PASSWORD
 docker run -d --name harris-teeter-cart --restart unless-stopped \
   --env-file harris_teeter.env -e HT_DATA_DIR=/data -e TZ=America/New_York \
   -p 8107:8000 -v "$PWD/data:/data" --shm-size 1g \
-  harris-teeter-cart
+  ghcr.io/ljmerza/harris-teeter-cart:latest
 ```
+
+Or build it yourself with `docker build -t harris-teeter-cart .` and use that tag instead.
 
 Then open `http://<host>:8107` and press Refresh. The first one takes about a minute because it
 has to sign in. After that the session is reused.
@@ -82,8 +85,11 @@ the cart on the site, so it asks first if anything is crossed off.
 The parser and web page only use the standard library, so the tests run without the browser stack.
 
 ```bash
-python3 -m unittest discover -s tests -t .
+uv sync --group dev
+uv run pytest
 ```
+
+Plain `python3 -m unittest discover -s tests -t .` works too.
 
 Each refresh saves its raw responses, a screenshot and the page HTML to `data/captures/<time>/`
 (the last 5 are kept), which is the easiest way to see what changed if the site breaks the parser.
