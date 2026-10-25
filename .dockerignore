@@ -11,3 +11,5 @@ tests/
 coverage.xml
 .github/
 docs/
+.git/
+.ruff_cache/
