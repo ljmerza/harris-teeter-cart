@@ -137,7 +137,9 @@ def build(captures):
     for gtin, q in qty.items():
         p = products.get(gtin) or {}
         item = p.get("item") or {}
-        locs = [_location(x) for x in ((p.get("location") or {}).get("locations") or [])]
+        locs = [
+            _location(x) for x in ((p.get("location") or {}).get("locations") or [])
+        ]
         price, was = _price(p)
         regular_total, line_total = totals.get(gtin, (None, None))
         items.append(

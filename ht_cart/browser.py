@@ -5,6 +5,7 @@ for why): Kroger sites sit behind Akamai like Home Depot, so we present as
 one returning shopper rather than a new device each run.
 """
 
+import contextlib
 import json
 import logging
 import os
@@ -73,10 +74,8 @@ class Browser:
 
         # Firefox's profile lock outlives an unclean shutdown.
         for lock in ("lock", ".parentlock"):
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(os.path.join(self.profile_dir, lock))
-            except OSError:
-                pass
         self._cm = Camoufox(
             from_options=_camoufox_identity(self.profile_dir), persistent_context=True
         )

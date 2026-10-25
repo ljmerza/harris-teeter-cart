@@ -185,7 +185,9 @@ def _render():
             current = label
         loc = it.get("location") or {}
         where = " · ".join(
-            f"<b>{k} {_esc(loc[k])}</b>" if k in ("side", "bay") else f"{k} {_esc(loc[k])}"
+            f"<b>{k} {_esc(loc[k])}</b>"
+            if k in ("side", "bay")
+            else f"{k} {_esc(loc[k])}"
             for k in ("side", "bay", "shelf")
             if loc.get(k)
         )
@@ -195,11 +197,19 @@ def _render():
         # Line total after coupons/deals (cart-savings), regular struck through;
         # falls back to the product's own price text if that response was missing.
         total = it.get("line_total") or it.get("price")
-        was = it.get("line_regular") if it.get("line_total") else it.get("regular_price")
-        price = f"{_esc(total)}" + (f" <span class=was>{_esc(was)}</span>" if was else "")
-        deal = it.get("price") if it.get("line_total") and it.get("regular_price") else ""
+        was = (
+            it.get("line_regular") if it.get("line_total") else it.get("regular_price")
+        )
+        price = f"{_esc(total)}" + (
+            f" <span class=was>{_esc(was)}</span>" if was else ""
+        )
+        deal = (
+            it.get("price") if it.get("line_total") and it.get("regular_price") else ""
+        )
         if deal and deal != total:
-            sub = " · ".join(x for x in (sub, f"<span class=deal>{_esc(deal)}</span>") if x)
+            sub = " · ".join(
+                x for x in (sub, f"<span class=deal>{_esc(deal)}</span>") if x
+            )
         img = f"<img src='{_esc(it['image'])}' alt=''>" if it.get("image") else ""
         check = (
             "<form class=cross method=post action=/cross>"

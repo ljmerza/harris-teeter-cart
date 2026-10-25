@@ -5,6 +5,7 @@ Every run saves its raw captures to data/captures/<timestamp>/ (responses,
 screenshot, page HTML) so the parser can be fitted to the real data shape.
 """
 
+import contextlib
 import json
 import logging
 import os
@@ -93,7 +94,9 @@ def _sign_in(page, run_dir):
             return
         if _visible(page, OTP_SEL, timeout=500):
             page.screenshot(path=str(run_dir / "signin-code.png"))
-            raise ScrapeError("Sign-in asked for a verification code (not handled yet).")
+            raise ScrapeError(
+                "Sign-in asked for a verification code (not handled yet)."
+            )
         time.sleep(1)
     page.screenshot(path=str(run_dir / "signin-failed.png"))
     raise ScrapeError(f"Sign-in did not reach the cart (stuck at {page.url}).")
@@ -148,10 +151,9 @@ def run():
         # Only keep what the cart page itself loaded.
         responses.clear()
         page.goto(f"{BASE_URL}/cart", wait_until="domcontentloaded")
-        try:
+        # Analytics can keep the network busy past the timeout; carry on anyway.
+        with contextlib.suppress(Exception):
             page.wait_for_load_state("networkidle", timeout=20000)
-        except Exception:  # noqa: BLE001 - analytics keep the network busy
-            pass
         # Scroll so lazily loaded item cards fetch their product details.
         for _ in range(8):
             page.mouse.wheel(0, 1400)
@@ -170,7 +172,9 @@ def run():
     _prune_captures(cap_root)
     log.info(
         "cart refreshed: %d items, %d responses, warnings=%s",
-        len(result["items"]), len(captures), result["warnings"],
+        len(result["items"]),
+        len(captures),
+        result["warnings"],
     )
     return result
 
