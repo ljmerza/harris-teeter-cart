@@ -2,7 +2,7 @@
 
 Signs in to harristeeter.com with a headful Camoufox browser, reads the cart, and shows the items
 on a simple page grouped and sorted by aisle (the site and app sort the cart by when items were added).
-Not a git repo yet.
+Public repo: `github.com/ljmerza/harris-teeter-cart`.
 
 - **Run:** service `harris-teeter-cart` in `../../docker-compose.local.yml` (dcwrap). Credentials:
   `../../env/harris_teeter.env` (`HT_EMAIL`/`HT_PASSWORD`, template in `.env.example`). After code
